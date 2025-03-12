@@ -27,8 +27,8 @@ connectDB();
 const allowedOrigins = [
     'http://localhost:3042', 
     'http://localhost:3043', // Local development    
-    'http://pageadmin.avatar2x.com',
-    'http://avatar2x.com'
+    'https://pageadmin.avatar2x.com',
+    'https://avatar2x.com'
    
 ];
 
