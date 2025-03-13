@@ -1,5 +1,5 @@
 const express = require("express");
-const { loginAccAdmin, registerAccAdmin, logoutAdmin } = require("../controllers/Login/login.admin.controller");
+const { loginAccAdmin, registerAccAdmin, logoutAdmin, doiThongTinAdmin } = require("../controllers/Login/login.admin.controller");
 
 
 const router = express.Router();
@@ -12,7 +12,7 @@ router.post("/register-admin", registerAccAdmin);
 router.post("/logout-admin", logoutAdmin);
 
 // router.post("/quen-mat-khau", quenMatKhauKH);
-
+router.put("/doi-thong-tin-admin", doiThongTinAdmin)
 
 
 module.exports = router;

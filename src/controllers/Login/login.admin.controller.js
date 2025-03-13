@@ -198,4 +198,28 @@ module.exports = {
             return res.status(500).json({ message: 'Đã xảy ra lỗi. Vui lòng thử lại sau.', data: false });
         }
     },
+
+    doiThongTinAdmin: async (req, res) => {
+        const {_idAcc, password, passwordMoi, email} = req.body         
+        
+        // một chuỗi đã được mã hóa có thể lưu vào cơ sở dữ liệu.
+        const hashedPassword = await bcrypt.hash(passwordMoi, 10);
+
+        const updateResult = await AccAdmin.updateOne(
+            { _id: _idAcc }, 
+            { password: hashedPassword, email }
+        );
+        
+        if(updateResult) {
+            // Trả về kết quả thành công
+            return res.status(200).json({
+                message: "Cập nhật mật khẩu thành công!",
+                data: updateResult
+            });
+        } else {
+            return res.status(404).json({                
+                message: "Chỉnh sửa thất bại"
+            })
+        }  
+    }
 }
