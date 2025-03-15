@@ -265,8 +265,8 @@ module.exports = {
                             transactionHistory: {
                                 date: new Date(),
                                 amount: sePayWebhookData.transferAmount,
-                                bonus: bonus, // Lưu lại tiền khuyến mãi
-                                total: totalAmount, // Tổng tiền sau khi cộng khuyến mãi
+                                // bonus: bonus, // Lưu lại tiền khuyến mãi
+                                // total: totalAmount, // Tổng tiền sau khi cộng khuyến mãi
                                 type: "deposit",
                                 reference: sePayWebhookData.id,
                             },
