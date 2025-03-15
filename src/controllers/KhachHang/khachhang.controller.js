@@ -260,7 +260,7 @@ module.exports = {
                     // { _id: idUser },
                     { name: idUser },
                     {
-                        $inc: { soDu: totalAmount },
+                        $inc: { soDu: sePayWebhookData.transferAmount },
                         $push: {
                             transactionHistory: {
                                 date: new Date(),
