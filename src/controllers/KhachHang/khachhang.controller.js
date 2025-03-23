@@ -261,7 +261,7 @@ module.exports = {
                     // { _id: idUser },
                     { name: new RegExp(`^${idUser}$`, "i") }, // Tìm kiếm không phân biệt hoa thường
                     {
-                        $inc: { soDu: sePayWebhookData.transferAmount },
+                        $inc: { soDu: totalAmount },
                         $push: {
                             transactionHistory: {
                                 date: new Date(),
