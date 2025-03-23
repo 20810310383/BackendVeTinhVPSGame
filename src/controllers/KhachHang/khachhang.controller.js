@@ -224,16 +224,17 @@ module.exports = {
 
             // kiểm tra xác thực api
             if (pattern === apiKey) {
-                // Lấy giá trị khuyến mãi từ database
-                const config = await Config.findOne({ key: "bonus_percent" }).session(session);
-                const bonusPercent = config?.value || 0; // Giá trị % do admin cài đặt
+               // Lấy giá trị khuyến mãi từ database
+               const config = await Config.findOne({ key: "bonus_percent" }).session(session);
+               const bonusPercent = config?.value || 0; // Giá trị % do admin cài đặt
+               const dkien = config?.dieuKien || 0; // Giá trị dieukien gia tien do admin cài đặt
 
-                let bonus = 0;
-                if (sePayWebhookData.transferAmount >= 100000) {
-                    bonus = (sePayWebhookData.transferAmount * bonusPercent) / 100;
-                }
+               let bonus = 0;
+               if (sePayWebhookData.transferAmount >= dkien ) {
+                   bonus = (sePayWebhookData.transferAmount * bonusPercent) / 100;
+               }
 
-                const totalAmount = sePayWebhookData.transferAmount + bonus;
+               const totalAmount = sePayWebhookData.transferAmount + bonus;
 
                 // Tạo lịch sử giao dịch
                 const newTransaction = await SePayTransaction.create({
@@ -258,15 +259,15 @@ module.exports = {
                 console.log("idUser: ", idUser);                
                 const updatedUser = await AccKH.findOneAndUpdate(
                     // { _id: idUser },
-                    { name: idUser },
+                    { name: new RegExp(`^${idUser}$`, "i") }, // Tìm kiếm không phân biệt hoa thường
                     {
                         $inc: { soDu: sePayWebhookData.transferAmount },
                         $push: {
                             transactionHistory: {
                                 date: new Date(),
                                 amount: sePayWebhookData.transferAmount,
-                                // bonus: bonus, // Lưu lại tiền khuyến mãi
-                                // total: totalAmount, // Tổng tiền sau khi cộng khuyến mãi
+                                bonus: bonus, // Lưu lại tiền khuyến mãi
+                                total: totalAmount, // Tổng tiền sau khi cộng khuyến mãi
                                 type: "deposit",
                                 reference: sePayWebhookData.id,
                             },
@@ -503,4 +504,44 @@ module.exports = {
         }
     },
   
+    updatePhanTramNapTien: async (req, res) => {
+        try {
+            const { value, _id, dieuKien, description } = req.body; // Giá trị % mới từ admin
+    
+            if (value < 0) {
+                return res.status(400).json({ message: "Invalid bonus percentage" });
+            }
+    
+            const updatedConfig = await Config.findOneAndUpdate(
+                { _id: _id },
+                { value, dieuKien, description },
+                { new: true, upsert: true } // Nếu chưa có thì tạo mới
+            );
+    
+            return res.status(200).json({
+                success: true,
+                message: `Cập nhật khuyến mãi thành công: ${value}%`,
+                data: updatedConfig,
+            });
+        } catch (error) {
+            console.error("Error:", error);
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+    },
+
+    findPhanTramNapTien: async (req, res) => {
+        let findRobux = await Config.findOne({})
+        if(findRobux) {
+            return res.status(200).json({
+                message: "Đã tìm ra Config",
+                errCode: 0,
+                data: findRobux,                   
+            })
+        } else {
+            return res.status(500).json({
+                message: "Tìm Config thất bại!",
+                errCode: -1,
+            })
+        }
+    },
 };
