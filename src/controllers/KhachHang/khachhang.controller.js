@@ -253,7 +253,7 @@ module.exports = {
                 });
 
                 // const matchContent = sePayWebhookData.content.match(/NAP([a-f0-9]{24})/);
-                const matchContent = sePayWebhookData.content.match(/NAP([a-zA-Z0-9]{6,24})/);
+                const matchContent = sePayWebhookData.content.match(/NAP([a-zA-Z0-9]{1,24})/);
                 console.log("matchContent: ", matchContent);                
                 const idUser = matchContent[0].replace("NAP", "").toLowerCase();
                 console.log("idUser: ", idUser);                
